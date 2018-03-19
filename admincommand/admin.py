@@ -6,10 +6,7 @@ from django.shortcuts import render
 from django.contrib.admin.options import csrf_protect_m
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-try:
-    from django.conf.urls import url, patterns
-except ImportError:
-    from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url
 from django.utils.encoding import force_unicode
 from django.http import HttpResponseForbidden
 from django.utils.safestring import mark_safe
@@ -38,13 +35,12 @@ class AdminCommandAdmin(SneakAdmin):
                 return self.admin_site.admin_view(view)(*args, **kwargs)
             return update_wrapper(wrapper, view)
 
-        urlpatterns = patterns(
-            '',
+        urlpatterns = [
             url(
                 r'^run/([\w_]+)',
                 wrap(self.run_command_view),
             )
-        )
+        ]
         return urlpatterns + super(AdminCommandAdmin, self).get_urls()
 
     def run_command_view(self, request, url_name):
